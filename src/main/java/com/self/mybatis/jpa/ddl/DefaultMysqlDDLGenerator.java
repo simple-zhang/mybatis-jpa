@@ -1,5 +1,7 @@
 package com.self.mybatis.jpa.ddl;
 
+import com.self.mybatis.jpa.generator.EntitySqlDispatcher;
+import com.self.mybatis.jpa.meta.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DefaultMysqlDDLGenerator implements DDLGenerator {
 
@@ -25,7 +28,11 @@ public class DefaultMysqlDDLGenerator implements DDLGenerator {
         try {
             List<String> sql = new ArrayList<>(16);
             DataBase dataBase = this.getDataBse(connection);
-            EntitySqlD
+            Set<Class> classes = EntitySqlDispatcher.getInstance().getEntities();
+            classes.forEach(clazz -> {
+                Table table = EntitySqlDispatcher.getInstance().getMetaDataParser(clazz).getTable();
+                sql.addAll(compareStruct(table, dataBase.getTable(table.getName())));
+            });
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
         }

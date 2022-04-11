@@ -1,6 +1,8 @@
 package com.self.mybatis.jpa.generator;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EntitySqlDispatcher {
@@ -17,4 +19,11 @@ public class EntitySqlDispatcher {
     }
 
 
+    public Set<Class> getEntities() {
+        return Collections.unmodifiableSet(metaDataParseMap.keySet());
+    }
+
+    public MetaDataParser getMetaDataParser(Class clazz) {
+        return metaDataParseMap.get(clazz);
+    }
 }
